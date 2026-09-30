@@ -3,8 +3,8 @@
 | Step | Status |
 |---|---|
 | 1 Design/scaffold | complete |
-| 2-7 Implementation | remediation in progress |
-| 8-16 Verification/reports | pending final remediation verification |
+| 2-7 Implementation | remediation complete |
+| 8-16 Verification/reports | complete |
 
 ## Decisions
 - Java 17 / Spring Boot 3.3.5 Maven monolith, port 8000; package `com.eventforge`.
@@ -21,4 +21,6 @@
 
 ## Remediation status
 - Feature remediation complete: endpoints, budget planning/aggregation, RSVP MAYBE, filters, UUID principal handling, and mutation notification/activity integrations implemented.
-- Pending: compile/test repair, documentation/OpenAPI examples, representative workflow tests, complete live API report regeneration.
+- Documentation complete: README endpoint examples and Springdoc operation/schema examples cover the API; Swagger redirect path is public.
+- Verification complete: Maven test passed (4 tests); Maven package passed. H2-backed live API workflow ran 29 observed checks with 0 failures, including `/docs` and `/api-docs` 200, JWT/ownership coverage, filters, and required rule rejections.
+- Reports regenerated under `tests-artifacts/`: `api_test_report.xlsx` and `project_report.docx`.
