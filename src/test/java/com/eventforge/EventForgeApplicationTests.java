@@ -43,8 +43,8 @@ class EventForgeApplicationTests {
  }
  @Test void overlappingScheduleAndOtherOwnersAreRejected() throws Exception {
   String owner=token("schedule-"+UUID.randomUUID()+"@test.local"); String event=event(owner,5,"1000.00");
-  created(owner,"/api/events/"+event+"/schedule-items","{\"title\":\"First\",\"startTime\":\"2025-12-01T10:00:00\",\"endTime\":\"2025-12-01T11:00:00\"}");
-  mvc.perform(post("/api/events/"+event+"/schedule-items").header("Authorization",bearer(owner)).contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Overlap\",\"startTime\":\"2025-12-01T10:30:00\",\"endTime\":\"2025-12-01T11:30:00\"}")).andExpect(status().isConflict());
+  created(owner,"/api/events/"+event+"/schedule-items","{\"title\":\"First\",\"startTime\":\"2025-12-01T10:00:00Z\",\"endTime\":\"2025-12-01T11:00:00Z\"}");
+  mvc.perform(post("/api/events/"+event+"/schedule-items").header("Authorization",bearer(owner)).contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Overlap\",\"startTime\":\"2025-12-01T10:30:00Z\",\"endTime\":\"2025-12-01T11:30:00Z\"}")).andExpect(status().isConflict());
   mvc.perform(get("/api/events/"+event).header("Authorization",bearer(token("other-"+UUID.randomUUID()+"@test.local")))).andExpect(status().isNotFound());
  }
  private String token(String email) throws Exception { MvcResult r=mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Tester\",\"email\":\""+email+"\",\"password\":\"password123\"}")).andExpect(status().isCreated()).andReturn(); return json.readTree(r.getResponse().getContentAsString()).get("token").asText(); }

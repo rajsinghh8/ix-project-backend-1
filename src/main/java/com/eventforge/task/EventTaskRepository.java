@@ -25,4 +25,18 @@ public interface EventTaskRepository extends JpaRepository<EventTask, UUID> {
                                 @Param("deadlineTo") Instant deadlineTo, Pageable pageable);
 
     Optional<EventTask> findByIdAndEvent_IdAndEvent_Owner_Id(UUID id, UUID eventId, UUID ownerId);
+
+    @Query("select t from EventTask t where t.deadline is not null and t.status <> :completed and t.deadline > :now and t.deadline <= :approachingBy")
+    java.util.List<EventTask> findApproachingDeadlines(@Param("now") Instant now, @Param("approachingBy") Instant approachingBy, @Param("completed") TaskStatus completed);
+
+    @Query("select t from EventTask t where t.deadline is not null and t.status <> :completed and t.deadline <= :now")
+    java.util.List<EventTask> findOverdueDeadlines(@Param("now") Instant now, @Param("completed") TaskStatus completed);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @Query(value = "delete from event_task_dependencies where task_id in (select id from event_tasks where event_id = :eventId) or dependency_id in (select id from event_tasks where event_id = :eventId)", nativeQuery = true)
+    void deleteDependenciesByEventId(@Param("eventId") UUID eventId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("delete from EventTask t where t.event.id = :eventId")
+    void deleteByEventId(@Param("eventId") UUID eventId);
 }

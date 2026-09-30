@@ -49,22 +49,24 @@ Replace `E`, `T`, `G`, `C`, `X`, `S`, `V`, and `P` with returned UUIDs. Collecti
 
 ### Schedule
 
-* `GET /api/events/E/schedule-items?page=0&size=20` → **200** `{"content":[{"id":"S","eventId":"E","title":"Reception","description":"Opening","startTime":"2025-12-31T18:00:00","endTime":"2025-12-31T19:00:00","location":"Main hall"}]}`.
-* `POST /api/events/E/schedule-items` request `{"title":"Reception","description":"Opening","startTime":"2025-12-31T18:00:00","endTime":"2025-12-31T19:00:00","location":"Main hall"}` → **201** schedule JSON.
+Schedule `startTime` and `endTime` are required ISO-8601 instants (for example, `2025-12-31T18:00:00Z`); local timestamps without an offset are rejected.
+
+* `GET /api/events/E/schedule-items?page=0&size=20` → **200** `{"content":[{"id":"S","eventId":"E","title":"Reception","description":"Opening","startTime":"2025-12-31T18:00:00Z","endTime":"2025-12-31T19:00:00Z","location":"Main hall"}]}`.
+* `POST /api/events/E/schedule-items` request `{"title":"Reception","description":"Opening","startTime":"2025-12-31T18:00:00Z","endTime":"2025-12-31T19:00:00Z","location":"Main hall"}` → **201** schedule JSON.
 * `PUT /api/events/E/schedule-items/S` uses that request → **200** schedule JSON; `DELETE /api/events/E/schedule-items/S` → **204** *(no body)*.
 
 ### Vendors and payments
 
-* `GET /api/events/E/vendors?page=0&size=20` → **200** `{"content":[{"id":"V","eventId":"E","name":"Acme Catering","category":"Catering","contactName":"Morgan Lee","email":"morgan@acme.test","phone":"+15551234567","contractedAmount":2000.00}]}`.
-* `POST /api/events/E/vendors` request `{"name":"Acme Catering","category":"Catering","contactName":"Morgan Lee","email":"morgan@acme.test","phone":"+15551234567","contractedAmount":2000.00}` → **201** vendor JSON.
+* `GET /api/events/E/vendors?page=0&size=20` → **200** `{"content":[{"id":"V","eventId":"E","name":"Acme Catering","serviceType":"Catering","cost":2000.00,"contactDetails":"Morgan Lee, morgan@acme.test, +15551234567","bookingStatus":"CONFIRMED","paidAmount":500.00,"outstandingAmount":1500.00}]}`. Paid and outstanding amounts are calculated from the vendor's payments; outstanding never falls below zero.
+* `POST /api/events/E/vendors` request `{"name":"Acme Catering","serviceType":"Catering","cost":2000.00,"contactDetails":"Morgan Lee, morgan@acme.test, +15551234567","bookingStatus":"CONFIRMED"}` → **201** vendor JSON.
 * `PUT /api/events/E/vendors/V` uses that request → **200** vendor JSON; `DELETE /api/events/E/vendors/V` → **204** *(no body)*.
-* `GET /api/events/E/vendors/V/payments?page=0&size=20` → **200** `{"content":[{"id":"P","vendorId":"V","amount":500.00,"paidOn":"2025-12-01","note":"Deposit"}]}`.
-* `POST /api/events/E/vendors/V/payments` request `{"amount":500.00,"paidOn":"2025-12-01","note":"Deposit"}` → **201** payment JSON; `DELETE /api/events/E/vendors/V/payments/P` → **204** *(no body)*.
-* `GET /api/events/E/vendors/V/payments/summary` → **200** `{"vendorId":"V","contractedAmount":2000.00,"paidAmount":500.00,"outstandingAmount":1500.00,"paymentCount":1}`.
+* `GET /api/events/E/vendors/V/payments?page=0&size=20` → **200** `{"content":[{"id":"P","vendorId":"V","amount":500.00,"paidAt":"2025-12-01T10:15:30Z","note":"Deposit"}]}`.
+* `POST /api/events/E/vendors/V/payments` request `{"amount":500.00,"paidAt":"2025-12-01T10:15:30Z","note":"Deposit"}` → **201** payment JSON; `DELETE /api/events/E/vendors/V/payments/P` → **204** *(no body)*.
+* `GET /api/events/E/vendors/V/payments/summary` → **200** `{"vendorId":"V","cost":2000.00,"paidAmount":500.00,"outstandingAmount":1500.00,"paymentCount":1}`.
 
 ### Activities and notifications
 
-* `GET /api/events/E/activities?page=0&size=20` → **200** `{"content":[{"id":"uuid","eventId":"E","actorId":"uuid","action":"EVENT_CREATED","details":"Launch","createdAt":"2025-01-01T00:00:00"}]}`.
+* `GET /api/events/E/activities?page=0&size=20` → **200** `{"content":[{"id":"uuid","eventId":"E","actorId":"uuid","action":"EVENT_CREATED","details":"Launch","createdAt":"2025-01-01T00:00:00Z"}]}`.
 * `GET /api/notifications?page=0&size=20` → **200** `{"content":[{"id":"uuid","eventId":"E","type":"TASK_ASSIGNED","message":"Task assigned","read":false,"createdAt":"2025-01-01T00:00:00"}]}`.
 * `PATCH /api/notifications/N/read` request *(none)* → **200** `{"id":"N","eventId":"E","type":"TASK_ASSIGNED","message":"Task assigned","read":true,"createdAt":"2025-01-01T00:00:00"}`.
 

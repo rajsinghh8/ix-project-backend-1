@@ -44,6 +44,7 @@ com/eventforge/schedule/ScheduleService.class
 com/eventforge/exception/ApiExceptionHandler$ErrorResponse.class
 com/eventforge/invitation/GuestInvitationController.class
 com/eventforge/invitation/GuestInvitationDtos$Update.class
+com/eventforge/task/DeadlineNotificationScheduler.class
 com/eventforge/security/SecurityConfig.class
 com/eventforge/budget/BudgetDtos$CategoryRequest.class
 com/eventforge/invitation/GuestInvitationDtos$Create.class
@@ -53,6 +54,7 @@ com/eventforge/event/Event.class
 com/eventforge/event/EventController.class
 com/eventforge/budget/BudgetDtos$CategoryResponse.class
 com/eventforge/invitation/GuestInvitationDtos$Response.class
+com/eventforge/vendor/VendorBookingStatus.class
 com/eventforge/exception/ApiExceptionHandler$1.class
 com/eventforge/task/TaskStatus.class
 com/eventforge/security/JwtService.class

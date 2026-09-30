@@ -33,6 +33,13 @@
 
 | Verifier remediation group | Status |
 |---|---|
-| Vendor contract/payment summaries | in progress |
-| Timestamp/notifications/event cleanup | in progress |
-| Verification and reports | pending |
+| Vendor contract/payment summaries | complete |
+| Timestamp/notifications/event cleanup | complete |
+| Verification and reports | complete |
+
+## Final verifier remediation status
+- Vendor API/entity contract now uses validated `serviceType`, `cost`, `contactDetails`, and string-persisted `VendorBookingStatus`; payment timestamps are validated `Instant paidAt`. Vendor list responses include live `paidAmount` and nonnegative `outstandingAmount`.
+- Schedule timestamps and activity timestamps are `Instant`. `DeadlineNotificationScheduler` runs hourly, creates approaching/overdue notifications, and deduplicates task/type/day notifications. Event deletion performs explicit transactional child cleanup in foreign-key-safe order.
+- Final verification on 2026-09-30: Maven tests passed (5 tests, 0 failures/errors) and `mvn -DskipTests package` passed. A freshly packaged app was booted with H2 and exercised through 46 individual HTTP checks with 0 failures.
+- Final artifacts under `tests-artifacts/`: `test_results.json` (readable observed request source), `api_test_report.xlsx`, and `project_report.docx`; both `/docs` and `/api-docs` have distinct observed 200 rows.
+- Docker daemon was unavailable, so the final application boot used the packaged jar with H2 rather than PostgreSQL compose infrastructure; no containers were started.

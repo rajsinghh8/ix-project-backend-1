@@ -20,4 +20,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                             @Param("dateTo") LocalDate dateTo, Pageable pageable);
  @Query("select coalesce(sum(e.amount), 0) from Expense e where e.event.id = :eventId")
  BigDecimal totalForEvent(@Param("eventId") UUID eventId);
+ @org.springframework.data.jpa.repository.Modifying @Query("delete from Expense e where e.event.id = :eventId") void deleteByEventId(@Param("eventId") UUID eventId);
 }

@@ -1,8 +1,15 @@
 package com.eventforge.event;
 
+import com.eventforge.activity.EventActivityRepository;
 import com.eventforge.activity.EventActivityService;
 import com.eventforge.budget.BudgetCategoryRepository;
 import com.eventforge.budget.ExpenseRepository;
+import com.eventforge.invitation.GuestInvitationRepository;
+import com.eventforge.notification.NotificationRepository;
+import com.eventforge.schedule.ScheduleItemRepository;
+import com.eventforge.task.EventTaskRepository;
+import com.eventforge.vendor.VendorPaymentRepository;
+import com.eventforge.vendor.VendorRepository;
 import com.eventforge.domain.User;
 import com.eventforge.notification.NotificationService;
 import com.eventforge.notification.NotificationType;
@@ -26,15 +33,32 @@ public class EventService {
     private final ExpenseRepository expenses;
     private final EventActivityService activities;
     private final NotificationService notifications;
+    private final EventTaskRepository tasks;
+    private final GuestInvitationRepository invitations;
+    private final ScheduleItemRepository scheduleItems;
+    private final VendorRepository vendors;
+    private final VendorPaymentRepository vendorPayments;
+    private final NotificationRepository notificationRepository;
+    private final EventActivityRepository activityRepository;
     private final EntityManager entityManager;
 
     public EventService(EventRepository events, BudgetCategoryRepository categories, ExpenseRepository expenses,
-                        EventActivityService activities, NotificationService notifications, EntityManager entityManager) {
+                        EventActivityService activities, NotificationService notifications, EventTaskRepository tasks,
+                        GuestInvitationRepository invitations, ScheduleItemRepository scheduleItems, VendorRepository vendors,
+                        VendorPaymentRepository vendorPayments, NotificationRepository notificationRepository,
+                        EventActivityRepository activityRepository, EntityManager entityManager) {
         this.events = events;
         this.categories = categories;
         this.expenses = expenses;
         this.activities = activities;
         this.notifications = notifications;
+        this.tasks = tasks;
+        this.invitations = invitations;
+        this.scheduleItems = scheduleItems;
+        this.vendors = vendors;
+        this.vendorPayments = vendorPayments;
+        this.notificationRepository = notificationRepository;
+        this.activityRepository = activityRepository;
         this.entityManager = entityManager;
     }
 
@@ -75,9 +99,19 @@ public class EventService {
 
     @Transactional
     public void delete(UUID id) {
-        Event event = owned(id);
-        activities.recordActivity(event, event.getOwner(), "EVENT_DELETED", "Deleted event: " + event.getName());
-        notifications.recordForEventOwner(event, NotificationType.BUDGET, "Event deleted: " + event.getName());
+        Event event = owned(id); // Preserve the ownership check before any destructive operation.
+        UUID eventId = event.getId();
+        // Child rows are explicitly removed in FK dependency order; do not rely on provider cascades.
+        notificationRepository.deleteByEventId(eventId);
+        activityRepository.deleteByEventId(eventId);
+        tasks.deleteDependenciesByEventId(eventId);
+        tasks.deleteByEventId(eventId);
+        invitations.deleteByEventId(eventId);
+        expenses.deleteByEventId(eventId);
+        categories.deleteByEventId(eventId);
+        scheduleItems.deleteByEventId(eventId);
+        vendorPayments.deleteByEventId(eventId);
+        vendors.deleteByEventId(eventId);
         events.delete(event);
     }
 

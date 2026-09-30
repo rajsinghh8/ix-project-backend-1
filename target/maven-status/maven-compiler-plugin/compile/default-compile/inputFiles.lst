@@ -48,6 +48,7 @@
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/security/JwtService.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/security/SecurityConfig.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/service/AuthService.java
+/app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/DeadlineNotificationScheduler.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/EventTask.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/EventTaskController.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/EventTaskDtos.java
@@ -56,6 +57,7 @@
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/TaskPriority.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/task/TaskStatus.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/vendor/Vendor.java
+/app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/vendor/VendorBookingStatus.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/vendor/VendorController.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/vendor/VendorDto.java
 /app/outputs/job-3668b42a-20b2-49b6-a2bf-68292761002b/src/main/java/com/eventforge/vendor/VendorPayment.java
