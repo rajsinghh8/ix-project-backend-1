@@ -20,4 +20,5 @@
 - Baseline implementation, build, H2 boot probe, and artifacts were completed. Docker daemon was unavailable in this environment.
 
 ## Remediation status
-- Pending: feature groups, documentation/OpenAPI examples, representative workflow tests, complete live API report regeneration.
+- Feature remediation complete: endpoints, budget planning/aggregation, RSVP MAYBE, filters, UUID principal handling, and mutation notification/activity integrations implemented.
+- Pending: compile/test repair, documentation/OpenAPI examples, representative workflow tests, complete live API report regeneration.

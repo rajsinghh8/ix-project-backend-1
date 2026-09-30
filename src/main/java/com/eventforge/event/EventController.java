@@ -1,6 +1,7 @@
 package com.eventforge.event;
 
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,14 @@ public class EventController {
     private final EventService service;
     public EventController(EventService service) { this.service = service; }
     @GetMapping
-    public Page<EventDtos.EventResponse> list(Pageable pageable) { return service.list(pageable); }
+    public Page<EventDtos.EventResponse> list(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) EventStatus status,
+            @RequestParam(required = false) LocalDate dateFrom,
+            @RequestParam(required = false) LocalDate dateTo,
+            Pageable pageable) {
+        return service.list(search, status, dateFrom, dateTo, pageable);
+    }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventDtos.EventResponse create(@Valid @RequestBody EventDtos.EventRequest request) {

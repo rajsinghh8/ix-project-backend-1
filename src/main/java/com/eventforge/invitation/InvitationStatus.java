@@ -4,5 +4,6 @@ package com.eventforge.invitation;
 public enum InvitationStatus {
     PENDING,
     ACCEPTED,
-    DECLINED
+    DECLINED,
+    MAYBE
 }

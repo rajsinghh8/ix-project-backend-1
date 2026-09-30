@@ -1,2 +1,2 @@
 package com.eventforge.notification;
-public enum NotificationType { DEADLINE, INVITATION, OVERDUE, BUDGET }
+public enum NotificationType { DEADLINE, INVITATION, OVERDUE, BUDGET, SCHEDULE, VENDOR, PAYMENT }
