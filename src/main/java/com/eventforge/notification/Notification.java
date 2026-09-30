@@ -1,0 +1,8 @@
+package com.eventforge.notification;
+import com.eventforge.event.Event; import com.eventforge.domain.User; import jakarta.persistence.*; import java.time.*; import java.util.UUID;
+@Entity @Table(name="notifications") public class Notification {
+ @Id @GeneratedValue(strategy=GenerationType.UUID) private UUID id; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="event_id",nullable=false) private Event event; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="recipient_id",nullable=false) private User recipient;
+ @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) private NotificationType type; @Column(nullable=false,length=500) private String message; @Column(nullable=false) private boolean read; @Column(nullable=false,updatable=false) private LocalDateTime createdAt;
+ protected Notification(){} public Notification(Event event,User recipient,NotificationType type,String message){this.event=event;this.recipient=recipient;this.type=type;this.message=message;this.createdAt=LocalDateTime.now();} public void markRead(){read=true;}
+ public UUID getId(){return id;} public Event getEvent(){return event;} public User getRecipient(){return recipient;} public NotificationType getType(){return type;} public String getMessage(){return message;} public boolean isRead(){return read;} public LocalDateTime getCreatedAt(){return createdAt;}
+}

@@ -1,0 +1,3 @@
+package com.eventforge.activity;
+import com.eventforge.domain.User; import java.util.UUID; import org.springframework.data.domain.*; import org.springframework.security.core.annotation.AuthenticationPrincipal; import org.springframework.web.bind.annotation.*;
+@RestController @RequestMapping("/api/events/{eventId}/activities") public class EventActivityController {private final EventActivityService service;public EventActivityController(EventActivityService service){this.service=service;}@GetMapping public Page<EventActivityDto> list(@PathVariable UUID eventId,@AuthenticationPrincipal User user,Pageable pageable){return service.list(eventId,user.getId(),pageable);}}

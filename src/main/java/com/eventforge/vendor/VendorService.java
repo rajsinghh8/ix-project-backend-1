@@ -1,0 +1,16 @@
+package com.eventforge.vendor;
+import com.eventforge.event.*; import java.math.BigDecimal; import java.util.UUID; import org.springframework.data.domain.*; import org.springframework.http.HttpStatus; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import org.springframework.web.server.ResponseStatusException;
+@Service @Transactional public class VendorService {
+ private final VendorRepository vendors; private final VendorPaymentRepository payments; private final EventRepository events;
+ public VendorService(VendorRepository vendors,VendorPaymentRepository payments,EventRepository events){this.vendors=vendors;this.payments=payments;this.events=events;}
+ @Transactional(readOnly=true) public Page<VendorDto.Response> list(UUID event,UUID owner,Pageable page){return vendors.findAllOwned(event,owner,page).map(VendorDto.Response::from);}
+ public VendorDto.Response create(UUID eventId,UUID owner,VendorDto.Request r){return VendorDto.Response.from(vendors.save(new Vendor(event(eventId,owner),r.name(),r.category(),r.contactName(),r.email(),r.phone(),r.contractedAmount())));}
+ public VendorDto.Response update(UUID event,UUID id,UUID owner,VendorDto.Request r){Vendor v=vendor(event,id,owner);v.update(r.name(),r.category(),r.contactName(),r.email(),r.phone(),r.contractedAmount());return VendorDto.Response.from(v);}
+ public void delete(UUID event,UUID id,UUID owner){vendors.delete(vendor(event,id,owner));}
+ @Transactional(readOnly=true) public Page<VendorDto.PaymentResponse> listPayments(UUID event,UUID vendor,UUID owner,Pageable page){vendor(event,vendor,owner);return payments.findAllOwned(vendor,owner,page).map(VendorDto.PaymentResponse::from);}
+ public VendorDto.PaymentResponse createPayment(UUID event,UUID vendor,UUID owner,VendorDto.PaymentRequest r){return VendorDto.PaymentResponse.from(payments.save(new VendorPayment(vendor(event,vendor,owner),r.amount(),r.paidOn(),r.note())));}
+ public void deletePayment(UUID event,UUID vendor,UUID payment,UUID owner){vendor(event,vendor,owner); VendorPayment p=payments.findById(payment).filter(x->x.getVendor().getId().equals(vendor)&&x.getVendor().getEvent().getOwner().getId().equals(owner)).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Payment not found"));payments.delete(p);}
+ @Transactional(readOnly=true) public VendorDto.PaymentSummary summary(UUID event,UUID vendor,UUID owner){Vendor v=vendor(event,vendor,owner);BigDecimal paid=payments.paidTotal(vendor);BigDecimal contracted=v.getContractedAmount()==null?BigDecimal.ZERO:v.getContractedAmount();return new VendorDto.PaymentSummary(vendor,v.getContractedAmount(),paid,contracted.subtract(paid),payments.countByVendorId(vendor));}
+ private Event event(UUID id,UUID owner){return events.findById(id).filter(e->e.getOwner().getId().equals(owner)).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Event not found"));}
+ private Vendor vendor(UUID event,UUID id,UUID owner){return vendors.findById(id).filter(v->v.getEvent().getId().equals(event)&&v.getEvent().getOwner().getId().equals(owner)).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Vendor not found"));}
+}
