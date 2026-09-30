@@ -24,3 +24,15 @@
 - Documentation complete: README endpoint examples and Springdoc operation/schema examples cover the API; Swagger redirect path is public.
 - Verification complete: Maven test passed (4 tests); Maven package passed. H2-backed live API workflow ran 29 observed checks with 0 failures, including `/docs` and `/api-docs` 200, JWT/ownership coverage, filters, and required rule rejections.
 - Reports regenerated under `tests-artifacts/`: `api_test_report.xlsx` and `project_report.docx`.
+
+## Verifier remediation plan
+- Vendor group: replace legacy vendor fields with required `serviceType`, nonnegative required `cost`, required `contactDetails`, and string-persisted `VendorBookingStatus`; make payments use required `Instant paidAt`; add `paidAmount` and `outstandingAmount` to every vendor list response. Outstanding is `max(cost - paidAmount, 0)`.
+- Lifecycle group: use `Instant` for schedule timestamps and activity creation; add scheduled deadline processing for approaching and overdue tasks; perform explicit transactional dependent-resource cleanup before event deletion. Deadline notifications are deduplicated per task/day/type.
+- Final verification will rerun Maven tests/package and a live H2 workflow, regenerate accumulated real HTTP JSON/xlsx/docx artifacts, retaining `/docs` and `/api-docs` checks.
+- Contracts between groups: lifecycle cleanup may delete vendor/payment rows by event id; vendor group owns the fields and payment aggregation exposed by vendor APIs.
+
+| Verifier remediation group | Status |
+|---|---|
+| Vendor contract/payment summaries | in progress |
+| Timestamp/notifications/event cleanup | in progress |
+| Verification and reports | pending |
